@@ -32,21 +32,24 @@ class NetworkService {
 
   static Future<List<AppNetworkInfo>> getAppNetworkStats() async {
     try {
-      final List<dynamic> raw = await _channel.invokeMethod('getAppNetworkStats') ?? [];
-      return raw
-          .cast<Map>()
-          .map((m) => AppNetworkInfo.fromMap(m))
-          .toList();
+      final List<dynamic> raw =
+          await _channel.invokeMethod('getAppNetworkStats') ?? [];
+      return raw.cast<Map>().map((m) => AppNetworkInfo.fromMap(m)).toList();
     } catch (_) {
       return [];
     }
   }
 
-  static Future<bool> killApp(String packageName) async {
+  /// Kills background processes. Returns "killed" or "opened_settings".
+  static Future<String> killApp(String packageName, {bool openSettings = false}) async {
     try {
-      return await _channel.invokeMethod<bool>('killApp', {'packageName': packageName}) ?? false;
+      final result = await _channel.invokeMethod<String>('killApp', {
+        'packageName': packageName,
+        'openSettings': openSettings,
+      });
+      return result ?? 'killed';
     } catch (_) {
-      return false;
+      return 'error';
     }
   }
 
@@ -58,20 +61,39 @@ class NetworkService {
     }
   }
 
-  // ─── Format bytes/sec → human-readable speed string ──────────────────────
+  static Future<List<Map<String, dynamic>>> getDebugStats() async {
+    try {
+      final List<dynamic> raw =
+          await _channel.invokeMethod('getDebugStats') ?? [];
+      return raw.cast<Map>().map((m) => Map<String, dynamic>.from(m)).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static Future<Uint8List?> getAppIcon(String packageName) async {
+    try {
+      final result = await _channel.invokeMethod<Uint8List>('getAppIcon', {'packageName': packageName});
+      return result;
+    } catch (_) {
+      return null;
+    }
+  }
+
   static String formatSpeed(int bytesPerSec) {
-    if (bytesPerSec < 1024) return '${bytesPerSec} B/s';
+    if (bytesPerSec < 1024) return '$bytesPerSec B/s';
     if (bytesPerSec < 1024 * 1024) {
       return '${(bytesPerSec / 1024).toStringAsFixed(1)} KB/s';
     }
     return '${(bytesPerSec / (1024 * 1024)).toStringAsFixed(2)} MB/s';
   }
 
-  // ─── Format total bytes ───────────────────────────────────────────────────
   static String formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    if (bytes < 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    }
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
   }
 }

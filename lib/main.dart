@@ -6,10 +6,12 @@ import 'screens/home_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
-    systemNavigationBarColor: Color(0xFF060E18),
+    systemNavigationBarColor: Color(0xFF0A0A0F),
+    systemNavigationBarIconBrightness: Brightness.light,
   ));
   runApp(const NetWatchApp());
 }
@@ -23,12 +25,15 @@ class NetWatchApp extends StatelessWidget {
       title: 'NetWatch',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00D4FF),
-          brightness: Brightness.dark,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0A0A0F),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFFF6B00),
+          secondary: Color(0xFF00C2FF),
+          surface: Color(0xFF131318),
         ),
-        scaffoldBackgroundColor: const Color(0xFF060E18),
         useMaterial3: true,
+        fontFamily: 'Roboto',
       ),
       home: const HomeScreen(),
     );
