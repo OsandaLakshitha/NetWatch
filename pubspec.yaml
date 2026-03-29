@@ -1,0 +1,28 @@
+name: netwatch
+description: Real-time per-app network monitor with kill switch
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # App usage & traffic stats via platform channel (built-in, see android code)
+  # For icons
+  flutter_svg: ^2.0.9
+  # Auto-refresh timer
+  async: ^2.11.0
+  # Smooth animations
+  flutter_animate: ^4.5.0
+  # Persistent settings
+  shared_preferences: ^2.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
